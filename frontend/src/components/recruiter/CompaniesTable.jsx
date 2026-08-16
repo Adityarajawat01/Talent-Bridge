@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -6,6 +6,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TableRow,
 } from "../ui/table";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -28,8 +29,8 @@ const CompaniesTable = () => {
           return true;
         }
         return company?.name
-          ?.toLowercase()
-          .includes(searchCompanyByText.toLowercase());
+          ?.toLowerCase()
+          .includes(searchCompanyByText.toLowerCase());
       });
     setFilterCompany(filteredCompany);
   }, [companies, searchCompanyByText]);
@@ -70,7 +71,7 @@ const CompaniesTable = () => {
                       <PopoverContent>
                         <div
                           onClick={() =>
-                            navigateavigate(
+                            navigate(
                               `/recruiter/companies/${company._id}`,
                             )
                           }

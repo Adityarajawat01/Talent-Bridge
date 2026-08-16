@@ -12,6 +12,8 @@ import CompanyCreate from "./components/recruiter/CompanyCreate";
 import CompanySetup from "./components/recruiter/CompanySetup";
 import RecJobs from "./components/recruiter/RecJobs";
 import PostJob from "./components/recruiter/PostJob";
+import Applicants from "./components/recruiter/Applicants";
+import ProtectedRoute from "./components/recruiter/ProtectedRoute";
 
 
 const appRouter = createBrowserRouter([
@@ -47,23 +49,27 @@ const appRouter = createBrowserRouter([
   // recruiter 
   {
     path:'/recruiter/companies',
-    element:<Companies/>
+    element: <ProtectedRoute><Companies/></ProtectedRoute>
   },
   {
     path:'/recruiter/companies/create',
-    element:<CompanyCreate/>
+    element:  <ProtectedRoute><CompanyCreate/></ProtectedRoute> 
   },
    {
     path:'/recruiter/companies/:id',
-    element:<CompanySetup/>
+    element: <ProtectedRoute><CompanySetup/></ProtectedRoute>  
   },
    {
     path:'/recruiter/jobs',
-    element:<RecJobs />
+    element: <ProtectedRoute><RecJobs/></ProtectedRoute> 
   },
   {
     path:'/recruiter/jobs/create',
-    element:<PostJob />
+    element: <ProtectedRoute><PostJob/></ProtectedRoute> 
+  },
+  {
+    path:'/recruiter/jobs/:id/applicants',
+    element: <ProtectedRoute><Applicants/></ProtectedRoute> 
   },
 ])
 

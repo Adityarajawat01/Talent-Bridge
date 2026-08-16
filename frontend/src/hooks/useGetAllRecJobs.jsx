@@ -9,7 +9,7 @@ const useGetAllRecJobs = () => {
   useEffect(() => {
     const fetchAllRecJobs = async () => {
       try {
-        const res = await axios.get(`${JOB_API_END_POINT}/getadminjobs`, {
+        const res = await axios.get(`${JOB_API_END_POINT}/getrecruiterjobs`, {
           withCredentials: true,
         });
         

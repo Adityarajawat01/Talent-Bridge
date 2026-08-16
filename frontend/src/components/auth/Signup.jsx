@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import Navbar from "../shared/Navbar";
@@ -22,7 +22,7 @@ const Signup = () => {
     file: "",
   });
 
-    const { loading } = useSelector((store) => store.auth);
+    const { loading, user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
@@ -66,6 +66,13 @@ const Signup = () => {
       dispatch(setLoading(false));
     }
   };
+
+   useEffect(()=> {
+      if(user){
+        navigate("/");
+      }
+    },[])
+  
 
   return (
     <div className="min-h-screen bg-gray-100">

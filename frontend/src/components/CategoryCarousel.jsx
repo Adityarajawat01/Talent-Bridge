@@ -1,3 +1,55 @@
+// import React from "react";
+// import {
+//   Carousel,
+//   CarouselContent,
+//   CarouselItem,
+//   CarouselNext,
+//   CarouselPrevious,
+// } from "./ui/carousel";
+// import { Button } from "./ui/button";
+// import { useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+// import { setSearchedQuery } from "@/redux/jobSlice";
+
+// const category = [
+//   "Frontend Developer",
+//   "Backend Developer",
+//   "Data Science",
+//   "Graphic Designer",
+//   "FullStack Developer",
+// ];
+
+// const CategoryCarousel = () => {
+//    const dispatch = useDispatch();
+//    const navigate = useNavigate();
+
+//     const searchJobHandler = (query) => {
+//       dispatch(setSearchedQuery(query));
+//       navigate("/browse");
+//     } 
+//   return (
+//     <div>
+//       <Carousel className="w-full max-w-xl mx-auto my-20">
+//         <CarouselContent>
+//           {category.map((cat, index) => (
+//             <CarouselItem key={index} className="md:basis-1/2 lg-basis-1/3">
+//               <Button onClick={() => searchJobHandler(cat)} variant="outline" className="rounded-full">
+//                 {cat}
+//               </Button>
+//             </CarouselItem>
+//           ))}
+//         </CarouselContent>
+//         <CarouselPrevious />
+//         <CarouselNext />
+//       </Carousel>
+//     </div>
+//   );
+// };
+
+// export default CategoryCarousel;
+
+
+
 import React from "react";
 import {
   Carousel,
@@ -6,33 +58,98 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel";
-import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSearchedQuery } from "@/redux/jobSlice";
 
 const category = [
-  "Frontend Developer",
-  "Backend Developer",
-  "Data Science",
-  "Graphic Designer",
-  "FullStack Developer",
+  "Software Development",
+  "Data & AI",
+  "Design",
+  "Marketing",
+  "Finance",
+  "Sales",
+  "HR & Recruitment",
+  "Customer Support",
 ];
 
 const CategoryCarousel = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const searchJobHandler = (query) => {
+    dispatch(setSearchedQuery(query));
+    navigate("/browse");
+  };
+
   return (
-    <div>
-      <Carousel className="w-full max-w-xl mx-auto my-20">
+    <section className="py-10 bg-white">
+      {/* Heading */}
+      <div className="text-center mb-8">
+        <p className="text-sm font-semibold text-[#F97316] uppercase tracking-wider">
+          Explore Opportunities
+        </p>
+
+        <h2 className="text-3xl font-bold text-[#111827] mt-2">
+          Explore Jobs by Category
+        </h2>
+
+        <p className="text-gray-500 mt-2">
+          Find the perfect role that matches your skills and interests.
+        </p>
+      </div>
+
+      {/* Carousel */}
+      <Carousel className="w-full max-w-5xl mx-auto px-12">
         <CarouselContent>
           {category.map((cat, index) => (
-            <CarouselItem key={index} className="md:basis-1/2 lg-basis-1/3">
-              <Button variant="outline" className="rounded-full">
+            <CarouselItem
+              key={index}
+              className="basis-auto md:basis-1/3 lg:basis-1/4"
+            >
+              <button
+                onClick={() => searchJobHandler(cat)}
+                className="
+                  w-full
+                  px-6 py-3
+                  rounded-full
+                  border border-orange-100
+                  bg-orange-50
+                  text-[#EA580C]
+                  font-medium
+                  whitespace-nowrap
+                  transition-all duration-200
+                  hover:bg-[#F97316]
+                  hover:text-white
+                  hover:border-[#F97316]
+                  hover:shadow-md
+                "
+              >
                 {cat}
-              </Button>
+              </button>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+
+        <CarouselPrevious
+          className="
+            border-orange-200
+            text-[#EA580C]
+            hover:bg-orange-50
+            hover:text-[#EA580C]
+          "
+        />
+
+        <CarouselNext
+          className="
+            border-orange-200
+            text-[#EA580C]
+            hover:bg-orange-50
+            hover:text-[#EA580C]
+          "
+        />
       </Carousel>
-    </div>
+    </section>
   );
 };
 
