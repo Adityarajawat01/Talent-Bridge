@@ -13,6 +13,7 @@ import { Check, MoreHorizontal, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import { APPLICATION_API_END_POINT } from "@/utils/constant";
 import axios from "axios";
+import { toast } from "sonner";
 
 const shortListingStatus = ["Accepted", "Rejected"];
 
@@ -82,7 +83,7 @@ const ApplicantsTable = () => {
                       {shortListingStatus.map((status, index) => {
                         return (
                           <div
-                            onClick={() => statusHandler(status, item?.id)}
+                            onClick={() => statusHandler(status, item?._id)}
                             key={index}
                             className="flex items-center gap-1 my-2 cursor-pointer"
                           >

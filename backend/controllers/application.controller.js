@@ -118,7 +118,7 @@ import { Job } from "../models/job.model.js"
         }
 
         // update the status 
-        application.status = status.tolowerCase();
+        application.status = status.toLowerCase();
         await application.save();
         return res.status(200).json({
             message:"Status updated successfully",

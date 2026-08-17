@@ -175,6 +175,7 @@ export const updateProfilePhoto = async (req, res) => {
   }
 };
 
+
 export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
@@ -191,8 +192,7 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    //profile photo
-
+  
     // Skills
     let skillsArray;
     if (skills) {
@@ -223,9 +223,7 @@ export const updateProfile = async (req, res) => {
       user.profile.resumeOriginalName = file.originalname;
     }
 
-    //profile photo update
-
-
+    // console.log(cloudResponse.secure_url);
     await user.save();
 
     user = {
