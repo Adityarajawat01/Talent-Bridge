@@ -4,6 +4,12 @@ import jwt from "jsonwebtoken";
 import getDatauri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+  secure: process.env.NODE_ENV === "production",
+};
+
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
@@ -100,9 +106,8 @@ export const login = async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, {
+        ...cookieOptions,
         maxAge: 1 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: "strict",
       })
       .json({
         message: `Welcome Back ${user.fullname}`,
@@ -116,7 +121,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+    return res.status(200).cookie("token", "", { ...cookieOptions, maxAge: 0 }).json({
       message: "logged out successfully",
       success: true,
     });

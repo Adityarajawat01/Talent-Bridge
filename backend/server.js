@@ -23,8 +23,21 @@ app.get("/home", (req, res)=>{
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL,
+    ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : []),
+].filter(Boolean).map((origin) => origin.trim());
+
 const corsOptions = {
-    origin:'http://localhost:5173',
+    origin(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
 }
 app.use(cors(corsOptions));
