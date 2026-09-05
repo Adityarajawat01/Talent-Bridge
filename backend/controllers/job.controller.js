@@ -1,4 +1,3 @@
-import { application } from "express";
 import { Company } from "../models/company.model.js";
 import { Job } from "../models/job.model.js"
 
@@ -69,6 +68,9 @@ export const getAllJobs = async (req, res) => {
       $or: [
         { title: { $regex: keyword, $options: "i" } },
         { description: { $regex: keyword, $options: "i" } },
+        { requirements: { $regex: keyword, $options: "i" } },
+        { jobType: { $regex: keyword, $options: "i" } },
+        { location: { $regex: keyword, $options: "i" } },
       ],
     };
     const jobs = await Job.find(query).populate({ path:"company"}).sort({ createdAt: -1}); // important
@@ -106,6 +108,87 @@ export const getJobById = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const updateJob = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    const userId = req.id;
+    const {
+      title,
+      description,
+      requirements,
+      salary,
+      location,
+      jobType,
+      experience,
+      position,
+      companyId,
+    } = req.body;
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found.",
+        success: false,
+      });
+    }
+
+    if (job.created_by.toString() !== userId) {
+      return res.status(403).json({
+        message: "You are not allowed to update this job.",
+        success: false,
+      });
+    }
+
+    if (
+      !title ||
+      !description ||
+      !requirements ||
+      !salary ||
+      !location ||
+      !jobType ||
+      !experience ||
+      !position ||
+      !companyId
+    ) {
+      return res.status(400).json({
+        message: "Something is missing",
+        success: false,
+      });
+    }
+
+    const updatedData = {
+      title,
+      description,
+      requirements: Array.isArray(requirements)
+        ? requirements
+        : requirements.split(","),
+      salary: Number(salary),
+      location,
+      jobType,
+      experienceLevel: experience,
+      position,
+      company: companyId,
+    };
+
+    const updatedJob = await Job.findByIdAndUpdate(jobId, updatedData, {
+      returnDocument: "after",
+    });
+
+    return res.status(200).json({
+      message: "Job updated successfully",
+      job: updatedJob,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
 

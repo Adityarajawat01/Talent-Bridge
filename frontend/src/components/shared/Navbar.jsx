@@ -1,7 +1,6 @@
-import React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Avatar, AvatarImage } from "../ui/avatar";
-import { LogOut, User2 } from "lucide-react";
+import { LogOut, MessageCircle, User2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,6 +76,21 @@ const Navbar = () => {
                     Jobs
                   </NavLink>
                 </li>
+
+                <li>
+                  <NavLink
+                    to="/chat"
+                    className={({ isActive }) =>
+                      `cursor-pointer transition-colors ${
+                        isActive
+                          ? "text-[#e5891fd7] font-semibold"
+                          : "hover:text-[#e5891fd7]"
+                      }`
+                    }
+                  >
+                    Messages
+                  </NavLink>
+                </li>
               </>
             ) : (
               <>
@@ -124,6 +138,23 @@ const Navbar = () => {
                     Browse
                   </NavLink>
                 </li>
+
+                {user ? (
+                  <li>
+                    <NavLink
+                      to="/chat"
+                      className={({ isActive }) =>
+                        `cursor-pointer transition-colors ${
+                          isActive
+                            ? "text-[#e5891fd7] font-semibold"
+                            : "hover:text-[#e5891fd7]"
+                        }`
+                      }
+                    >
+                      Messages
+                    </NavLink>
+                  </li>
+                ) : null}
               </>
             )}
           </ul>
@@ -193,6 +224,8 @@ const Navbar = () => {
                       </Link>
                     </Button>
                   </div>
+
+                 
 
                   <div className="flex items-center gap-2">
                     <LogOut className="h-4 w-4" />

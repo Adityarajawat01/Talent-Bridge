@@ -1,16 +1,19 @@
 import express from "express";
+import http from "http";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import { connect } from "mongoose";
 import connectDB from "./utils/db.js";
 import userRoute from "./routes/user.route.js"
 import companyRoute from "./routes/company.route.js"
 import jobRoute from "./routes/job.route.js"
 import applicationRoute from "./routes/application.route.js"
+import chatRoute from "./routes/chat.route.js"
+import { initializeSocket } from "./socket/socket.js";
 dotenv.config({})
  
 const app = express();
+const server = http.createServer(app);
 
 app.get("/home", (req, res)=>{
     return res.status(200).json({
@@ -26,6 +29,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
     "http://localhost:5173",
+    "http://localhost:5174",
     process.env.FRONTEND_URL,
     ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : []),
 ].filter(Boolean).map((origin) => origin.trim());
@@ -41,6 +45,8 @@ const corsOptions = {
     credentials: true,
 }
 app.use(cors(corsOptions));
+const io = initializeSocket(server, corsOptions);
+app.set("io", io);
 
 const PORT = process.env.PORT || 3000;
 
@@ -49,8 +55,9 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
+app.use("/api/v1/chat", chatRoute);
 
-app.listen(PORT, ()=>{
+server.listen(PORT, ()=>{
     connectDB();
     console.log(`server running at port ${PORT}`);
 })

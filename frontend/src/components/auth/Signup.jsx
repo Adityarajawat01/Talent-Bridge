@@ -22,7 +22,7 @@ const Signup = () => {
     file: "",
   });
 
-    const { loading, user } = useSelector((store) => store.auth);
+  const { loading, user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
@@ -176,7 +176,7 @@ const Signup = () => {
 
             {loading ? (
               <Button className="w-full mt-4 h-11 text-base">
-                <Loader2 className="mr=2 h-4 e-4 animate-spin" /> Please wait
+                <Loader2 className="mr-2 h-4 animate-spin" /> Please wait
               </Button>
             ) : (
               <Button type="submit" className="w-full mt-4 h-11 text-base">

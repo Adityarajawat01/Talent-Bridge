@@ -14,6 +14,7 @@ import RecJobs from "./components/recruiter/RecJobs";
 import PostJob from "./components/recruiter/PostJob";
 import Applicants from "./components/recruiter/Applicants";
 import ProtectedRoute from "./components/recruiter/ProtectedRoute";
+import Chat from "./components/Chat";
 
 
 const appRouter = createBrowserRouter([
@@ -45,6 +46,14 @@ const appRouter = createBrowserRouter([
     path:'/profile',
     element:<Profile/>
   },
+  {
+    path:'/chat',
+    element:<Chat/>
+  },
+  {
+    path:'/chat/:applicationId',
+    element:<Chat/>
+  },
   
   // recruiter 
   {
@@ -65,6 +74,10 @@ const appRouter = createBrowserRouter([
   },
   {
     path:'/recruiter/jobs/create',
+    element: <ProtectedRoute><PostJob/></ProtectedRoute> 
+  },
+  {
+    path:'/recruiter/jobs/:id/edit',
     element: <ProtectedRoute><PostJob/></ProtectedRoute> 
   },
   {

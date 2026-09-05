@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -18,11 +18,10 @@ const RecJobsTable = () => {
     (store) => store.job,
   );
 
-  const [filterJobs, setFilterJobs] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const filteredJobs = allRecJobs.filter((job) => {
+  const filterJobs = useMemo(() => {
+    return allRecJobs.filter((job) => {
       if (!searchJobByText) {
         return true;
       }
@@ -34,8 +33,6 @@ const RecJobsTable = () => {
           .includes(searchJobByText.toLowerCase())
       );
     });
-
-    setFilterJobs(filteredJobs);
   }, [allRecJobs, searchJobByText]);
 
   return (
@@ -79,7 +76,7 @@ const RecJobsTable = () => {
                     <PopoverContent className="w-40">
                       <div
                         onClick={() =>
-                          navigate(`/recruiter/companies/${job?._id}`)
+                          navigate(`/recruiter/jobs/${job?._id}/edit`)
                         }
                         className="flex items-center gap-2 cursor-pointer"
                       >

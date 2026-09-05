@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
+import useGetAllCompanies from "@/hooks/useGetAllCompanies";
 import {
   Select,
   SelectContent,
@@ -14,25 +15,31 @@ import {
 import axios from "axios";
 import { JOB_API_END_POINT } from "@/utils/constant";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import Navbar from "../shared/Navbar";
 
+const initialInput = {
+  title: "",
+  description: "",
+  requirements: "",
+  salary: "",
+  location: "",
+  jobType: "",
+  experience: "",
+  position: "",
+  companyId: "",
+};
+
 const PostJob = () => {
-  const [input, setInput] = useState({
-    title: "",
-    description: "",
-    requirements: "",
-    salary: "",
-    location: "",
-    jobType: "",
-    experience: "",
-    position: 0,
-    companyId: "",
-  });
+  useGetAllCompanies();
 
   const navigate = useNavigate();
+  const params = useParams();
+  const isEditMode = Boolean(params.id);
+  const [input, setInput] = useState(initialInput);
   const [loading, setLoading] = useState(false);
+  const [fetchingJob, setFetchingJob] = useState(false);
 
   const { companies } = useSelector((store) => store.company);
 
@@ -44,15 +51,53 @@ const PostJob = () => {
   };
 
   const selectChangeHandler = (value) => {
-    const selectedCompany = companies.find(
-      (company) => company.name.toLowerCase() === value
-    );
-
     setInput({
       ...input,
-      companyId: selectedCompany._id,
+      companyId: value,
     });
   };
+
+  useEffect(() => {
+    if (!isEditMode) return;
+
+    const fetchJob = async () => {
+      try {
+        setFetchingJob(true);
+
+        const res = await axios.get(`${JOB_API_END_POINT}/get/${params.id}`, {
+          withCredentials: true,
+        });
+
+        if (res.data.success) {
+          const job = res.data.job;
+          const companyId =
+            typeof job?.company === "object" ? job?.company?._id : job?.company;
+
+          setInput({
+            title: job?.title || "",
+            description: job?.description || "",
+            requirements: Array.isArray(job?.requirements)
+              ? job.requirements.join(", ")
+              : job?.requirements || "",
+            salary: job?.salary || "",
+            location: job?.location || "",
+            jobType: job?.jobType || "",
+            experience: job?.experienceLevel || "",
+            position: job?.position || "",
+            companyId: companyId || "",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response?.data?.message || "Unable to fetch job");
+        navigate("/recruiter/jobs");
+      } finally {
+        setFetchingJob(false);
+      }
+    };
+
+    fetchJob();
+  }, [isEditMode, navigate, params.id]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -60,16 +105,24 @@ const PostJob = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post(
-        `${JOB_API_END_POINT}/post`,
-        input,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      const requestConfig = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      };
+
+      const res = isEditMode
+        ? await axios.put(
+            `${JOB_API_END_POINT}/update/${params.id}`,
+            input,
+            requestConfig,
+          )
+        : await axios.post(
+            `${JOB_API_END_POINT}/post`,
+            input,
+            requestConfig,
+          );
 
       if (res.data.success) {
         toast.success(res.data.message);
@@ -95,6 +148,10 @@ const PostJob = () => {
           onSubmit={submitHandler}
           className="p-8 max-w-xl border border-gray-200 shadow-lg rounded-md"
         >
+          <h1 className="font-bold text-xl mb-5">
+            {isEditMode ? "Edit Job" : "Create Job"}
+          </h1>
+
           <div className="grid grid-cols-2 gap-2">
             
             <div>
@@ -186,7 +243,10 @@ const PostJob = () => {
             </div>
 
             {companies.length > 0 && (
-              <Select onValueChange={selectChangeHandler}>
+              <Select
+                value={input.companyId}
+                onValueChange={selectChangeHandler}
+              >
                 <SelectTrigger className="w-44">
                   <SelectValue placeholder="Select a company" />
                 </SelectTrigger>
@@ -196,7 +256,7 @@ const PostJob = () => {
                     {companies.map((company) => (
                       <SelectItem
                         key={company._id}
-                        value={company.name.toLowerCase()}
+                        value={company._id}
                       >
                         {company.name}
                       </SelectItem>
@@ -220,8 +280,13 @@ const PostJob = () => {
             <Button
               type="submit"
               className="w-full mt-4 h-11 text-base"
+              disabled={fetchingJob}
             >
-              Post New Job
+              {fetchingJob
+                ? "Loading job..."
+                : isEditMode
+                  ? "Update Job"
+                  : "Post New Job"}
             </Button>
           )}
 

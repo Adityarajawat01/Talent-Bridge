@@ -1,69 +1,58 @@
-import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Navbar from "./shared/Navbar";
 import FilterCard from "./FilterCard";
 import Job from "./Job";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 
+const salaryRanges = {
+  "0-3 lpa": (salary) => salary >= 0 && salary <= 3,
+  "3-5 lpa": (salary) => salary > 3 && salary <= 5,
+  "5-8 lpa": (salary) => salary > 5 && salary <= 8,
+  "8-12 lpa": (salary) => salary > 8 && salary <= 12,
+  "12-20 lpa": (salary) => salary > 12 && salary <= 20,
+  "20+ lpa": (salary) => salary > 20,
+};
+
+const industryKeywords = {
+  "frontend developer": ["frontend", "front end", "react", "javascript", "html", "css"],
+  "backend developer": ["backend", "back end", "node", "express", "api", "server"],
+  "mern developer": ["mern", "mongodb", "mongo", "express", "react", "node"],
+  "data scientist": ["data scientist", "data science", "python", "machine learning", "ml"],
+  "ai engineer": ["ai", "artificial intelligence", "machine learning", "ml", "python"],
+};
+
 const Jobs = () => {
   const { allJobs, searchedQuery } = useSelector((store) => store.job);
 
-  const [filterJobs, setFilterJobs] = useState(allJobs);
-
-  useEffect(() => {
+  const filterJobs = useMemo(() => {
     if (!searchedQuery) {
-      setFilterJobs(allJobs);
-      return;
+      return allJobs;
     }
 
     const query = searchedQuery.toLowerCase().trim();
+    const salaryMatcher = salaryRanges[query];
+    const keywords = industryKeywords[query] || [query];
 
-    const filteredJobs = allJobs.filter((job) => {
-     
-      if (job?.location?.toLowerCase().includes(query)) {
-        return true;
+    return allJobs.filter((job) => {
+      if (salaryMatcher) {
+        return salaryMatcher(Number(job?.salary));
       }
 
-      
-      if (job?.title?.toLowerCase().includes(query)) {
-        return true;
-      }
+      const searchableText = [
+        job?.title,
+        job?.description,
+        job?.location,
+        job?.jobType,
+        job?.company?.name,
+        ...(job?.requirements || []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
 
-    
-      if (job?.description?.toLowerCase().includes(query)) {
-        return true;
-      }
-
-      const salary = Number(job?.salary);
-
-      if (query === "0-3 lpa") {
-        return salary >= 0 && salary <= 3;
-      }
-
-      if (query === "3-5 lpa") {
-        return salary > 3 && salary <= 5;
-      }
-
-      if (query === "5-8 lpa") {
-        return salary > 5 && salary <= 8;
-      }
-
-      if (query === "8-12 lpa") {
-        return salary > 8 && salary <= 12;
-      }
-
-      if (query === "12-20 lpa") {
-        return salary > 12 && salary <= 20;
-      }
-
-      if (query === "20+ lpa") {
-        return salary > 20;
-      }
-
-      return false;
+      return keywords.some((keyword) => searchableText.includes(keyword));
     });
-
-    setFilterJobs(filteredJobs);
   }, [allJobs, searchedQuery]);
 
   return (

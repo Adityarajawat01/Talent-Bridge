@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Table,
   TableBody,
@@ -9,11 +8,13 @@ import {
   TableRow,
 } from "../ui/table";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Check, MoreHorizontal, X } from "lucide-react";
+import { Check, MessageCircle, MoreHorizontal, X } from "lucide-react";
 import { useSelector } from "react-redux";
 import { APPLICATION_API_END_POINT } from "@/utils/constant";
 import axios from "axios";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const shortListingStatus = ["Accepted", "Rejected"];
 
@@ -46,6 +47,7 @@ const ApplicantsTable = () => {
             <TableHead>Contact</TableHead>
             <TableHead>Resume</TableHead>
             <TableHead>Date</TableHead>
+            <TableHead>Chat</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -73,6 +75,23 @@ const ApplicantsTable = () => {
                 </TableCell>
                 <TableCell>
                   {item?.applicant?.createdAt.split("T")[0]}
+                </TableCell>
+                <TableCell>
+                  {item?.status === "accepted" ? (
+                    <Link to={`/chat/${item?._id}`}>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="border-[#F8CFA8]"
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        Chat
+                      </Button>
+                    </Link>
+                  ) : (
+                    <span className="text-sm text-gray-400">Locked</span>
+                  )}
                 </TableCell>
                 <TableCell className="float-right cursor-pointer">
                   <Popover>

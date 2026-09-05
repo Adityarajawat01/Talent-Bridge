@@ -1,13 +1,19 @@
-import React from "react";
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import JobDescription from "./JobDescription";
 import { useNavigate } from "react-router-dom";
+import { getSkillMatchTone } from "@/lib/skillMatch";
 
 const Job = ({ job }) => {
   const navigate = useNavigate();
+  const skillMatch = job?.skillMatch;
+  const skillMatchTone = getSkillMatchTone(skillMatch?.percentage || 0);
+  const skillMatchClassName = {
+    high: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    medium: "bg-amber-50 text-amber-700 border-amber-200",
+    low: "bg-gray-50 text-gray-600 border-gray-200",
+  }[skillMatchTone];
 
   const daysAgoFunction = (mongodbTime) => {
     const createdAt = new Date(mongodbTime);
@@ -26,20 +32,31 @@ const Job = ({ job }) => {
             : `${daysAgoFunction(job?.createdAt)} days ago`}{" "}
         </p>
 
-        <Button
-          variant="outline"
-          className="
-            rounded-full
-            border-[#F8CFA8]
-            text-[#D96B00]
-            hover:bg-[#FFF3E0]
-            hover:text-[#B45309]
-            hover:border-[#F28C28]
-          "
-          size="icon"
-        >
-          <Bookmark />
-        </Button>
+        <div className="flex items-center gap-2">
+          {skillMatch && (
+            <Badge
+              variant="outline"
+              className={`whitespace-nowrap font-semibold ${skillMatchClassName}`}
+            >
+              {skillMatch.percentage}% Match
+            </Badge>
+          )}
+
+          <Button
+            variant="outline"
+            className="
+              rounded-full
+              border-[#F8CFA8]
+              text-[#D96B00]
+              hover:bg-[#FFF3E0]
+              hover:text-[#B45309]
+              hover:border-[#F28C28]
+            "
+            size="icon"
+          >
+            <Bookmark />
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-2 my-2">
