@@ -14,82 +14,109 @@ import RecJobs from "./components/recruiter/RecJobs";
 import PostJob from "./components/recruiter/PostJob";
 import Applicants from "./components/recruiter/Applicants";
 import ProtectedRoute from "./components/recruiter/ProtectedRoute";
-import Chat from "./components/Chat";
-
+import Chat from "./components/chat/Chat";
 
 const appRouter = createBrowserRouter([
   {
-    path:'/',
-    element:<Home/>
-  },
-   {
-    path:'/login',
-    element:<Login/>
-  },
-   {
-    path:'/signup',
-    element:<Signup/>
+    path: "/",
+    element: <Home />,
   },
   {
-    path:'/jobs',
-    element:<Jobs/>
+    path: "/login",
+    element: <Login />,
   },
   {
-    path:'/jobs/description/:id',
-    element: <JobDescription/>
+    path: "/signup",
+    element: <Signup />,
   },
   {
-    path:'/browse',
-    element:<Browse/>
+    path: "/jobs",
+    element: <Jobs />,
   },
   {
-    path:'/profile',
-    element:<Profile/>
+    path: "/jobs/description/:id",
+    element: <JobDescription />,
   },
   {
-    path:'/chat',
-    element:<Chat/>
+    path: "/browse",
+    element: <Browse />,
   },
   {
-    path:'/chat/:applicationId',
-    element:<Chat/>
-  },
-  
-  // recruiter 
-  {
-    path:'/recruiter/companies',
-    element: <ProtectedRoute><Companies/></ProtectedRoute>
+    path: "/profile",
+    element: <Profile />,
   },
   {
-    path:'/recruiter/companies/create',
-    element:  <ProtectedRoute><CompanyCreate/></ProtectedRoute> 
-  },
-   {
-    path:'/recruiter/companies/:id',
-    element: <ProtectedRoute><CompanySetup/></ProtectedRoute>  
-  },
-   {
-    path:'/recruiter/jobs',
-    element: <ProtectedRoute><RecJobs/></ProtectedRoute> 
+    path: "/chat",
+    element: <Chat />,
   },
   {
-    path:'/recruiter/jobs/create',
-    element: <ProtectedRoute><PostJob/></ProtectedRoute> 
+    path: "/chat/:applicationId",
+    element: <Chat />,
+  },
+
+  // recruiter
+  {
+    path: "/recruiter/companies",
+    element: (
+      <ProtectedRoute>
+        <Companies />
+      </ProtectedRoute>
+    ),
   },
   {
-    path:'/recruiter/jobs/:id/edit',
-    element: <ProtectedRoute><PostJob/></ProtectedRoute> 
+    path: "/recruiter/companies/create",
+    element: (
+      <ProtectedRoute>
+        <CompanyCreate />
+      </ProtectedRoute>
+    ),
   },
   {
-    path:'/recruiter/jobs/:id/applicants',
-    element: <ProtectedRoute><Applicants/></ProtectedRoute> 
+    path: "/recruiter/companies/:id",
+    element: (
+      <ProtectedRoute>
+        <CompanySetup />
+      </ProtectedRoute>
+    ),
   },
-])
+  {
+    path: "/recruiter/jobs",
+    element: (
+      <ProtectedRoute>
+        <RecJobs />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/recruiter/jobs/create",
+    element: (
+      <ProtectedRoute>
+        <PostJob />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/recruiter/jobs/:id/edit",
+    element: (
+      <ProtectedRoute>
+        <PostJob />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/recruiter/jobs/:id/applicants",
+    element: (
+      <ProtectedRoute>
+        <Applicants />
+      </ProtectedRoute>
+    ),
+  },
+]);
 
 function App() {
   return (
     <>
-     <RouterProvider router = {appRouter} />
+      <RouterProvider router={appRouter} />
     </>
   );
 }

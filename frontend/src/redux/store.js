@@ -4,6 +4,8 @@ import authSlice from "./authSlice";
 import jobSlice from "./jobSlice";
 import companySlice from "./companySlice"
 import applicationSlice from "./applicationSlice"
+import chatSlice from "./chatSlice";
+import videoCallSlice from "./videoCallSlice";
 
 import {
   persistStore,
@@ -48,6 +50,8 @@ const rootReducer = combineReducers({
   job: jobSlice,
   company: companySlice,
   application:applicationSlice,
+  chat: chatSlice,
+  videoCall: videoCallSlice,
 });
 
 // Persisted reducer
